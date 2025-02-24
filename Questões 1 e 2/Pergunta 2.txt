@@ -1,0 +1,47 @@
+2) Desenvolvimento de pipelines de ETL de dados com Python, Apache Airflow e Spark
+Foi solicitado à equipe de AI+Analytics do Observatório da Indústria/FIEC, um projeto
+envolvendo os dados do Anuário Estatísticos da ANTAQ (Agência Nacional de
+Transportes Aquáticos).
+O projeto consiste em uma análise pela equipe de cientistas de dados, bem como a
+disponibilização dos dados para o cliente que possui uma equipe de analistas própria
+que utiliza a ferramenta de BI (business intelligence) da Microsoft.
+Para isto, o nosso cientista de dados tem que entender a forma de apresentação dos
+dados pela ANTAQ e assim, fazer o ETL dos dados e os disponibilizar no nosso data
+lake para ser consumido pelo time de cientistas de dados, como também, elaborar
+uma forma de entregar os dados tratados ao time de analistas do cliente da melhor
+forma possível.
+
+Supondo que você seja nosso Especialista de dados:
+
+a) Olhando para todos os dados disponíveis na fonte citada acima, em qual
+estrutura de dados você orienta guardá-los? Data Lake, SQL ou NoSQL?
+Discorra sobre sua orientação. (1 pts)
+
+Resposta:
+
+Data Lake (Para Armazenamento Bruto)
+* Após analisar os dados, cheguei a conclusão de que um Data Lake é ideal para armazenar os dados brutos,
+antes do processamento. Ele vai permitir consultas flexíveis e maior escalabilidade para cientistas de Dados.
+
+SQL Server (Para Armazenamento Estruturado)
+* Nesse cenário, o SQL Server será usado para armazenar dados filtrados e modelados, otimizando assim a consulta
+por parte do time de analistas de BI. O modelo relacional facilita análises estruturadas, como é o caso aqui.
+
+NoSQL (Não seria interessante para esse caso)
+* Após uma analise dos dados, percebi que são bem estruturados e exigem consultas analíticas otimizadas. Um banco NoSQL, como MongoDB,
+não seria a melhor escolha para esse cenário.
+
+b) Nosso cliente estipulou que necessita de informações apenas sobre as
+atracações e cargas contidas nessas atracações dos últimos 3 anos (2021-
+2023). Logo, o time de especialistas de dados, em conjunto com você,
+analisaram e decidiram que os dados devem constar no data lake do
+observatório e em duas tabelas do SQL Server, uma para atracação e outra
+para carga.
+Assim, desenvolva script(s) em Python e Spark que extraia os dados do
+anuário, transforme-os e grave os dados tanto no data lake, quanto nas duas
+tabelas do SQL Server, sendo atracacao_fato e carga_fato, com as respectivas
+colunas abaixo. Os scripts de criação das tabelas devem constar no código
+final.
+Lembrando que os dados têm periodicidade mensal, então script’s
+automatizados e robustos ganham pontos extras. (2 pontos + 1 ponto para
+solução automatizada e elegante).

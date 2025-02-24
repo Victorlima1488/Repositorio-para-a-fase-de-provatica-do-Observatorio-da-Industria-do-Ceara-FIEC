@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  # Service for the Airflow Scheduler
+  airflow-scheduler:
+    image: apache/airflow:2.1.2
+    env_file:
+      - .env
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      - AIRFLOW__CORE__SQL_ALCHEMY_POOL_SIZE=5
+      - AIRFLOW__CORE__SQL_ALCHEMY_POOL_RECYCLE=1800
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/app/data
+    command: scheduler
+    restart: always
+
+  # Service for the Airflow Webserver
+  airflow-webserver:
+    image: apache/airflow:2.1.2
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__WEBSERVER__AUTHENTICATE=False  # Disables authentication
+      - AIRFLOW__WEBSERVER__AUTH_BACKEND=airflow.www.security.SecureApp  # Disables authentication
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/app/data
+    ports:
+      - "8080:8080"
+    command: webserver
+    restart: always
+
+  # Service for the Airflow Worker
+  airflow-worker:
+    image: apache/airflow:2.1.2
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/app/data
+    command: worker
+    restart: always
+
+  # Service for PostgreSQL (database for Airflow)
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    restart: always
+
+# Define persistent volumes
+volumes:
+  postgres-db:

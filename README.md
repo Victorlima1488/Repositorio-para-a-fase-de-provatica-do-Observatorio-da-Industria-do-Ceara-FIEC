@@ -38,7 +38,7 @@ The architecture of the project consists of the following components:
    
    #### Step 1: Build the Docker Image
    ```bash
-   docker-compose build
+   docker-compose build --no-cache
    ```
 
 ### **Architecture Diagram**  

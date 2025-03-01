@@ -1,26 +1,32 @@
-# Choose a Python base image
+# Use a versão slim do Python 3.9
 FROM python:3.9-slim
 
-# Add Debian Bullseye repository to ensure OpenJDK 11 is available
-RUN echo "deb http://deb.debian.org/debian/ bullseye main" > /etc/apt/sources.list.d/bullseye.list && \
-    apt-get update && apt-get install -y openjdk-11-jdk ca-certificates-java && \
+# Instalar dependências básicas
+RUN apt-get update && apt-get install -y \
+    openjdk-11-jdk ca-certificates-java \
+    build-essential libpq-dev && \
     apt-get clean
 
-# Set the JAVA_HOME environment variable
+# Configurar variável de ambiente para o Java
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH=$JAVA_HOME/bin:$PATH
 
-# Set the working directory inside the container
-WORKDIR /app
+# Criar diretório de trabalho compatível com Airflow
+WORKDIR /opt/airflow
 
-# Copy files from the src/etl directory to /app/src/etl inside the container
-COPY src/etl /app/src/etl
+# Copiar os arquivos do projeto para dentro do contêiner
+COPY src /opt/airflow/src
+COPY dags /opt/airflow/dags
+COPY requirements.txt /opt/airflow/
 
-# Copy the requirements.txt file
-COPY requirements.txt /app/
+# Adicionar o caminho do projeto ao PYTHONPATH para evitar erro de importação
+ENV PYTHONPATH="/opt/airflow:/opt/airflow/src:/opt/airflow/dags"
 
-# Install project dependencies
-RUN pip install --no-cache-dir -r /app/requirements.txt
+# Instalar dependências do Python
+RUN pip install --no-cache-dir -r /opt/airflow/requirements.txt
 
-# Set the command to run the main script of the project
-CMD ["python", "/app/src/etl/main.py"]
+# Ajustar permissões para evitar problemas de acesso
+RUN chmod -R 777 /opt/airflow/dags /opt/airflow/src
+
+# Definir o comando padrão do contêiner (pode ser alterado conforme necessidade)
+CMD ["python", "/opt/airflow/src/etl/main.py"]

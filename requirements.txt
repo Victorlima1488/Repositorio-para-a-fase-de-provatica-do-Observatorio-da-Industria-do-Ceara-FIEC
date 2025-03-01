@@ -1,6 +1,5 @@
 azure-storage-blob
-apache-airflow==2.1.2
-apache-airflow-providers-python==2.0.1
+apache-airflow
 pyspark
 python-dotenv
 requests

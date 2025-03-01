@@ -193,7 +193,10 @@ def main():
 
     # Directory paths
     raw_data_path = os.path.join(os.getcwd(), 'data', 'raw_data')
+    os.makedirs(raw_data_path, exist_ok=True)
+    
     output_path = os.path.join(os.getcwd(), 'data', 'processed_data')
+    os.makedirs(output_path, exist_ok=True)
 
     # Download, extract, and process files
     antaq_links_download = [

@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from sqlalchemy import create_engine
 from azure.storage.blob import BlobServiceClient
-from email_utils import send_email  # Make sure to import the email sending function
+from etl.email_utils import send_email  # Make sure to import the email sending function
 
 # Function to connect to SQL Server using SQLAlchemy
 def connect_to_sql_server():

@@ -1,7 +1,5 @@
-version: '3.8'
-
 services:
-  # Service for the Airflow Scheduler
+  # Airflow Scheduler
   airflow-scheduler:
     image: apache/airflow:2.1.2
     env_file:
@@ -12,42 +10,37 @@ services:
       - AIRFLOW__CORE__SQL_ALCHEMY_POOL_SIZE=5
       - AIRFLOW__CORE__SQL_ALCHEMY_POOL_RECYCLE=1800
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - PYTHONPATH=/opt/airflow:/opt/airflow/src:/opt/airflow/src/etl:/opt/airflow/dags
     volumes:
       - ./dags:/opt/airflow/dags
-      - ./data:/app/data
+      - ./src:/opt/airflow/src
     command: scheduler
     restart: always
+    depends_on:
+      - postgres
 
-  # Service for the Airflow Webserver
+  # Airflow Webserver
   airflow-webserver:
     image: apache/airflow:2.1.2
     environment:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
-      - AIRFLOW__WEBSERVER__AUTHENTICATE=False  # Disables authentication
-      - AIRFLOW__WEBSERVER__AUTH_BACKEND=airflow.www.security.SecureApp  # Disables authentication
+      - AIRFLOW__WEBSERVER__AUTHENTICATE=False
+      - AIRFLOW__WEBSERVER__AUTH_BACKEND=airflow.www.security.SecureApp
+      - PYTHONPATH=/opt/airflow:/opt/airflow/src:/opt/airflow/dags
     volumes:
       - ./dags:/opt/airflow/dags
-      - ./data:/app/data
+      - ./src:/opt/airflow/src
     ports:
       - "8080:8080"
     command: webserver
     restart: always
+    depends_on:
+      - postgres
+      - airflow-scheduler
 
-  # Service for the Airflow Worker
-  airflow-worker:
-    image: apache/airflow:2.1.2
-    environment:
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ./data:/app/data
-    command: worker
-    restart: always
-
-  # Service for PostgreSQL (database for Airflow)
+  # PostgreSQL Database for Airflow
   postgres:
     image: postgres:13
     environment:
@@ -55,9 +48,8 @@ services:
       POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
     volumes:
-      - postgres-db:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     restart: always
 
-# Define persistent volumes
 volumes:
-  postgres-db:
+  postgres_data:

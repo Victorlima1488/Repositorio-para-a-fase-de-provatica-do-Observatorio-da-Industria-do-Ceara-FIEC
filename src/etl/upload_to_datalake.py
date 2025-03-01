@@ -29,7 +29,7 @@ def upload_to_datalake(file_path, file_to_upload, container_client):
 
 # Iterate over the specified years for Atracacao data
 for year in years:
-    local_path_atracacao = os.path.join(r"C:\Users\Victor Lima\Documents\Main Victor\Portifólio\Prova Prática - Especialista em Engenharia de Dados (FIEC)\data\processed_data\Atracao.parquet", f"{year}Atracacao")
+    local_path_atracacao = os.path.join(r"/home/victor/repos/FIEC/data/processed_data/Atracao.parquet", f"{year}Atracacao")
     file_to_upload_atracacao = f"{year}Atracacao_data.parquet"  # File name based on the year
     file_path_atracacao = os.path.join(local_path_atracacao, file_to_upload_atracacao)
 
@@ -40,7 +40,7 @@ for year in years:
 
 # Iterate over the specified years for Carga data
 for year in years:
-    local_path_raw = os.path.join(r"C:\Users\Victor Lima\Documents\Main Victor\Portifólio\Prova Prática - Especialista em Engenharia de Dados (FIEC)\data\processed_data\Carga.parquet", f"{year}Carga")
+    local_path_raw = os.path.join(r"/home/victor/repos/FIEC/data/processed_data/Carga.parquet", f"{year}Carga")
     file_to_upload_raw = f"{year}Carga_data.parquet"  # File name based on the year
     file_path_raw = os.path.join(local_path_raw, file_to_upload_raw)
 
